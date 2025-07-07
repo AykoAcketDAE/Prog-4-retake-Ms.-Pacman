@@ -1,25 +1,42 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
+
+dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
+{
+	auto scene = std::unique_ptr<Scene>(new Scene(name));
+	Scene* scenePtr = scene.get();
+	m_ActiveScene = scene.get();
+	m_scenes[name] = std::move(scene);
+	return *scenePtr;
+}
+
 void dae::SceneManager::Update()
 {
-	for(auto& scene : m_scenes)
+	if (m_NextScene != nullptr)
 	{
-		scene->Update();
+		std::swap(m_ActiveScene, m_NextScene);
+		m_NextScene = nullptr;
 	}
+	if (m_ActiveScene!= nullptr)
+		m_ActiveScene->Update();
 }
 
 void dae::SceneManager::Render()
 {
-	for (const auto& scene : m_scenes)
-	{
-		scene->Render();
-	}
+	if (m_ActiveScene)
+		m_ActiveScene->Render();
 }
 
-dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
+void dae::SceneManager::Cleanup()
 {
-	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-	m_scenes.push_back(scene);
-	return *scene;
+	if (m_ActiveScene)
+		m_ActiveScene->Cleanup();
 }
+
+void dae::SceneManager::SetNextScene(const std::string& name)
+{
+	m_NextScene = m_scenes[name].get();
+}
+
+

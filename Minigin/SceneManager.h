@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <map>
 #include "Singleton.h"
 
 namespace dae
@@ -14,9 +15,16 @@ namespace dae
 
 		void Update();
 		void Render();
+		void Cleanup();
+		Scene* GetCurrentScene() { return m_ActiveScene; }
+		void SetNextScene(const std::string& name);
+
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
-		std::vector<std::shared_ptr<Scene>> m_scenes;
+		std::map<std::string,std::unique_ptr<Scene>> m_scenes;
+		Scene* m_ActiveScene{};
+		Scene* m_NextScene{};
+
 	};
 }

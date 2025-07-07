@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <functional>
-#include <filesystem>
+#include "ResourceManager.h"
+
 
 namespace dae
 {
