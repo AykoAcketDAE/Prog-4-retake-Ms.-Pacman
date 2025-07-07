@@ -108,7 +108,7 @@ namespace dae
 			return 	&m_Bounds;
 		}
 		void MarkForDestruction();
-		bool GetIsMarkedForDestruction() const { return m_MarkedForDestruction; };
+		std::pair<bool, std::vector<std::unique_ptr<BaseComponent>>> GetIsMarkedForDestruction() const { return { m_MarkedForDestruction, m_ComponentPtrList }; };
 
 	private:
 

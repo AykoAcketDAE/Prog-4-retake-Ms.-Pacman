@@ -22,4 +22,3 @@ private:
 	float m_Height{};
 	float m_FrameHeight{ 720.f };
 };
-
