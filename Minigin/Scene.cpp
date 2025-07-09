@@ -95,12 +95,9 @@ void dae::Scene::Cleanup()
 	{
 		if (object == nullptr) Remove(std::move(object));
 		
-		else if (auto info = object->GetIsMarkedForDestruction(); info.first == true)
+		else if (object->GetIsMarkedForDestruction())
 		{
-			std::for_each(info.second.begin(), info.second.end(), [](std::unique_ptr<BaseComponent> comp) {
-				if (comp == nullptr) return;
-				else comp = nullptr;
-				});
+			
 			Remove(std::move(object));
 		}
 	}

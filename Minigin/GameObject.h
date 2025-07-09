@@ -6,7 +6,7 @@
 #include "BaseComponent.h"
 #include <SDL_rect.h>
 #include <concepts>
-
+#include <algorithm>
 namespace dae
 {
 	
@@ -108,7 +108,11 @@ namespace dae
 			return 	&m_Bounds;
 		}
 		void MarkForDestruction();
-		std::pair<bool, std::vector<std::unique_ptr<BaseComponent>>> GetIsMarkedForDestruction() const { return { m_MarkedForDestruction, m_ComponentPtrList }; };
+		bool GetIsMarkedForDestruction() const { return { m_MarkedForDestruction}; };
+		void DeleteComponents()
+		{
+			m_ComponentPtrList.clear();
+		}
 
 	private:
 
