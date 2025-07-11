@@ -15,8 +15,8 @@ dae::RenderComponent::RenderComponent(GameObject* owner, const std::string& full
 
 void dae::RenderComponent::Update()
 {
-	m_DestBounds.x = GetOwner()->GetWorldPosition().x;
-	m_DestBounds.y = GetOwner()->GetWorldPosition().y;
+	m_DestBounds.x = GetOwner()->GetPosition().x;
+	m_DestBounds.y = GetOwner()->GetPosition().y;
 }
 void dae::RenderComponent::Render() const
 {

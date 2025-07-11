@@ -156,9 +156,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MsPacman.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MsPacman.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

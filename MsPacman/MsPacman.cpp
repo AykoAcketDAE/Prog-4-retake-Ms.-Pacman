@@ -5,16 +5,34 @@
 #endif
 #include "MsPacman.h"
 #include "Minigin.h"
+#include "Tile.h"
+#include <SDL_rect.h>
+void LoadGrid(dae::Scene& scene) {
+	
+	for (int row{}; row < 28; ++row)
+	{
+		for (int col{}; col < 36; ++col)
+		{
+			auto go = std::make_unique<dae::GameObject>();
+			TileInfo info{ row * 24,(col * 24) + 100,24,true };
+			go->AddComponent<Tile>(row, col, info);
+			scene.Add(std::move(go));
+		}
+	}
+}
 
 void load()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("scene");
 	auto go = std::make_unique<dae::GameObject>();
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Font.ttf", 24);
-	go->AddComponent<dae::TextComponent>("I'm blue daba dee daba die",font);
-	go->GetComponent<dae::TextComponent>()->SetColor(0, 0, 255, 0);
-	go->SetLocalPosition({ 200,300,0 });
+	//map
+	SDL_FRect mapSrc = {0,0,224,248};
+	SDL_FRect mapDst = {0,0,672,744};
+	go->SetPosition(0, 100);
+	go->AddComponent<dae::RenderComponent>("Map1.png", mapSrc, mapDst);
 	scene.Add(std::move(go));
+	LoadGrid(scene);
 }
 
 int main(int, char* []) {
