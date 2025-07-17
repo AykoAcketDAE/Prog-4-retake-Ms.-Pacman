@@ -1,17 +1,34 @@
 #pragma once
 #include <BaseComponent.h>
-enum class TileType
-{
-	Pacman,blinky,inky,pinky,clyde,pellet,powerPellet,Powerup
+
+enum class TileTypes{
+	Pacman,
+	blinky,
+	inky,
+	pinky,
+	clyde,
+	pellet,
+	powerPellet,
+	Powerup,
 };
 struct TileInfo
 {
-	int x{};
-	int y{};
+	int row{};
+	int col{};
 	int width{};
 	bool isWalkable{true};
-	std::vector<TileType> TypesInTile{};
+	std::vector<bool> m_Contents{
+	false,//bool Pacman;
+	false,//bool blinky;
+	false,//bool inky;
+	false,//bool pinky;
+	false,//bool clyde;
+	false,//bool pellet;
+	false,//bool powerPellet;
+	false //bool Powerup;
+	};
 };
+
 class Tile : public dae::BaseComponent
 {
 public:
@@ -20,9 +37,10 @@ public:
 	void Update() override;
 	void Render() const override;
 
+	TileInfo m_TileInfo;
 private:
-	int m_Row{};
-	int m_Col{};
-	TileInfo m_Info;
+	
+	int x{};
+	int y{};
 };
 

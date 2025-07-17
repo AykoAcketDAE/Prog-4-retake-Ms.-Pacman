@@ -81,10 +81,19 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, SDL_FRect sourceRect
 
 	SDL_RenderCopyEx(GetSDLRenderer(), texture.GetSDLTexture(), &src, &dst, angle, &center,SDL_FLIP_NONE);
 }
-void dae::Renderer::RenderSquare(int x, int y, int width, SDL_Color color)
+void dae::Renderer::RenderSquare(int x, int y, int width, SDL_Color color,bool fill)
 {
 	SDL_Rect rect = { x,y,width,width };
 	SDL_SetRenderDrawColor(GetSDLRenderer(), color.r, color.g, color.b, color.a);
-	SDL_RenderDrawRect(GetSDLRenderer(), &rect);
+	if (fill)
+	{
+		SDL_RenderFillRect(GetSDLRenderer(), &rect);
+	}
+	else
+	{
+		SDL_RenderDrawRect(GetSDLRenderer(), &rect);
+	}
+	
+	
 }
 SDL_Renderer* dae::Renderer::GetSDLRenderer() const { return m_renderer; }

@@ -5,7 +5,7 @@
 #endif
 
 Tile::Tile(dae::GameObject* owner, int row, int col, TileInfo info):
-	BaseComponent(owner),m_Row{row},m_Col{col}, m_Info{info}
+	BaseComponent(owner),x{row},y{col}, m_TileInfo{info}
 {
 }
 
@@ -17,6 +17,12 @@ void Tile::Update()
 void Tile::Render() const
 {
 #if _DEBUG
-	dae::Renderer::GetInstance().RenderSquare(m_Info.x, m_Info.y, m_Info.width, { 255,255,255 });
+	if(m_TileInfo.isWalkable)
+		dae::Renderer::GetInstance().RenderSquare(x, y, m_TileInfo.width, { 255,255,255 },false);
+	else if (m_TileInfo.m_Contents[static_cast<int>(TileTypes::Pacman)] == true)
+		dae::Renderer::GetInstance().RenderSquare(x, y, m_TileInfo.width, { 255,255,0 },true);
+	else
+		dae::Renderer::GetInstance().RenderSquare(x, y, m_TileInfo.width, { 255,0,255 },false);
+
 #endif
 }

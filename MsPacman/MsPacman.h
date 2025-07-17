@@ -6,7 +6,7 @@
 #include "RenderComponent.h"
 #include "TextComponent.h"
 #include "Scene.h"
-
+#include <vector>
 #include "InputManager.h"
 #include "Command.h"
 #include "SoundSystem.h"

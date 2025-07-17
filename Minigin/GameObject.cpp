@@ -14,6 +14,7 @@ void dae::GameObject::Update()
 	}
 	m_Bounds.x = m_WorldPosition.GetPosition().x;
 	m_Bounds.y = m_WorldPosition.GetPosition().y;
+	UpdateWorldPosition();
 }
 
 void dae::GameObject::Render() const
@@ -30,7 +31,7 @@ void dae::GameObject::SetPosition(float x, float y)
 	m_LocalPosition.SetPosition(x, y, 0.0f);
 }
 
-void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
+void dae::GameObject::SetParent(GameObject* parent, bool )
 {
 	if (IsChild(parent) || parent == this || m_Parent == parent)
 		return;
@@ -38,8 +39,6 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 		SetLocalPosition(GetWorldPosition());
 	else
 	{
-		if (keepWorldPosition)
-			SetLocalPosition(GetWorldPosition() - parent->GetWorldPosition());
 		SetPositionDirty();
 	}
 	if (m_Parent) m_Parent->RemoveChild(this);
@@ -66,7 +65,7 @@ void dae::GameObject::UpdateWorldPosition()
 		if (m_Parent == nullptr)
 			m_WorldPosition.SetPosition(m_LocalPosition.GetPosition());
 		else
-			m_WorldPosition.SetPosition(m_Parent->GetWorldPosition() + m_LocalPosition.GetPosition());
+			m_WorldPosition.SetPosition(m_Parent->GetPosition() + m_LocalPosition.GetPosition());
 	}
 	m_PositionIsDirty = false;
 }
