@@ -30,6 +30,9 @@
     <ClInclude Include="MsPacmanCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Pellet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MsPacman.cpp">
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MsPacmanCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pellet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

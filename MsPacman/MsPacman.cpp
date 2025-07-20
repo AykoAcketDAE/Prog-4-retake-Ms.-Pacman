@@ -33,8 +33,8 @@ std::vector<std::vector<Tile*>> LoadGrid(dae::Scene& scene) {
 		for (int col{}; col < 31; ++col)
 		{
 			auto go = std::make_unique<dae::GameObject>();
-			TileInfo info{ row,col + 100,24,static_cast<bool>(line[col] - 48) };
-			go->AddComponent<Tile>( (row * 24) ,col * 24+100, info);
+			TileInfo info{ row,col,24,static_cast<bool>(line[col] - 48) };
+			go->AddComponent<Tile>((row * 24), (col * 24) + 100, info);
 			grid[row].push_back(go->GetComponent<Tile>());
 			scene.Add(std::move(go));
 		}
