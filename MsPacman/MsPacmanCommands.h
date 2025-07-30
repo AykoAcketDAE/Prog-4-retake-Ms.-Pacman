@@ -14,3 +14,16 @@ private:
 	glm::vec2 m_Direction{};
 };
 
+class AddPelletScore final : public dae::Command
+{
+public:
+	AddPelletScore(dae::GameObject* player, dae::GameObject* go);
+	virtual ~AddPelletScore() = default;
+	void Execute() override;
+
+private:
+	
+	dae::GameObject* m_PlayerGo{ nullptr };
+	dae::GameObject* m_ScoreGo{ nullptr };
+	const int m_Score{ 10 };
+};

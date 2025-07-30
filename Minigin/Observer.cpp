@@ -31,7 +31,7 @@ void dae::Subject::RemoveObserver(Observer* observer)
 void dae::Subject::Notify(const GameObject& go, Event event)
 {
 	Observer* observer = m_Head;
-	while (observer != NULL)
+	while (observer != nullptr)
 	{
 		observer->OnNotify(event,go);
 		observer = observer->m_Next;

@@ -20,7 +20,7 @@ namespace dae
 		void RemoveObserver(Observer* observer);
 
 	protected:
-		void Notify(const GameObject& go, Event event);
+		virtual void Notify(const GameObject& go, Event event);
 
 	private:
 		Observer * m_Head{nullptr};
