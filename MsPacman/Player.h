@@ -29,6 +29,7 @@ public:
 		glm::vec2 gridPos{};
 	} m_PlayerInfo;
 	
+	bool CheckDirection(glm::vec2 direction);
 
 private:
 	void UpdatePlayerLocation();

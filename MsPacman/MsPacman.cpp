@@ -84,9 +84,9 @@ void load()
 	auto gridcomp = grid->GetComponent<Grid>();
 	player->AddComponent<Player>(player->GetComponent<dae::RenderComponent>(), playerInfo,grid->GetComponent<Grid>(),std::move(playerCommands));
 
-	for (int row{}; row < gridcomp->m_Grid.size(); ++row)
+	for (int row{1}; row < gridcomp->m_Grid.size()-1; ++row)
 	{
-		for (int col{}; col < gridcomp->m_Grid[row].size(); ++col)
+		for (int col{1}; col < gridcomp->m_Grid[row].size()-1; ++col)
 		{
 			if (gridcomp->m_Grid[row][col]->m_TileInfo.isWalkable)
 			{

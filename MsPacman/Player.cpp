@@ -22,6 +22,17 @@ void Player::Render() const
 
 }
 
+bool Player::CheckDirection(glm::vec2 direction)
+{
+	TileInfo* nextTile;
+	if (m_PlayerInfo.gridPos.x + direction.x <= -1) return false;
+	if (m_PlayerInfo.gridPos.x + direction.x >= 28) return false;
+	nextTile = &m_GridComp->m_Grid[static_cast<int>(m_PlayerInfo.gridPos.x +direction.x)][static_cast<int>(m_PlayerInfo.gridPos.y + direction.y)]->m_TileInfo;
+
+	if (nextTile->isWalkable) return true;
+	return false;
+}
+
 void Player::UpdatePlayerLocation()
 {
 	TileInfo* nextTile;
@@ -75,7 +86,7 @@ void Player::UpdatePlayerLocation()
 		{
 			// previous tile
 			currentTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = false;
-			//current tile
+			// current tile
 			nextTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = true;
 			if (transition)
 			{
