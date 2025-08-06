@@ -6,13 +6,14 @@
 #include "MsPacman.h"
 #include "Minigin.h"
 #include "Tile.h"
+#include "Grid.h"
 #include "Player.h"
 #include <SDL_rect.h>
 #include <fstream>
-#include "Grid.h"
 #include "MsPacmanCommands.h"
 #include "Pellet.h"
 #include "Score.h"
+
 std::vector<std::vector<Tile*>> LoadGrid(dae::Scene& scene) {
 	std::filesystem::path data_location = "../Data/";
 	std::filesystem::path path{ data_location/"maps.txt" };

@@ -104,10 +104,10 @@ void Grid::FindNeighbours()
 void Grid::FindNorthNeighbour(int index)
 {
 	//north
-	auto rstart = m_Vertices.rend() - index;    // Corresponds to vec[15]
+	auto it = m_Vertices.rend() - index;    // Corresponds to vec[15]
 	        // Corresponds to vec[-1], so search goes down to vec[0]
 
-	auto neighbour = std::find_if(rstart, m_Vertices.rend(), [&](std::pair<Node, glm::vec2> node) {
+	auto neighbour = std::find_if(it, m_Vertices.rend(), [&](std::pair<Node, glm::vec2> node) {
 		if (node.first.pos.x == m_Vertices[index].first.pos.x and node.first.pos != m_Vertices[index].first.pos)
 		{
 			if (node.second.y + m_Vertices[index].second.y == 0) {

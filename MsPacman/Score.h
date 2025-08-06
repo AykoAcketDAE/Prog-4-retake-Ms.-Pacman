@@ -15,4 +15,3 @@ private:
 	dae::TextComponent* m_TextComp;
 	int m_Score{};
 };
-

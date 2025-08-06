@@ -1,10 +1,12 @@
 #pragma once
 #include <BaseComponent.h>
 #include <RenderComponent.h>
-#include "Grid.h"
-#include "Tile.h"
 #include "Observer.h"
 #include "MsPacmanCommands.h"
+
+class Grid;
+class Tile;
+
 struct PlayerCommands
 {
 	std::unique_ptr<AddPelletScore> m_ScorePellet;
