@@ -95,8 +95,7 @@ void Player::UpdatePlayerLocation()
 				m_LerpTimer = 0;
 				GetOwner()->SetLocalPosition({ (nextTile->row * 24),
 					(nextTile->col * 24) + 100 ,0 });
-				m_GridComp->m_MsPacman = &m_PlayerInfo;
-				std::cout << "x: " << m_PlayerInfo.gridPos.x << "  ,y: " << m_PlayerInfo.gridPos.y << std::endl;
+				//std::cout << "x: " << m_PlayerInfo.gridPos.x << "  ,y: " << m_PlayerInfo.gridPos.y << std::endl;
 			}
 			else
 			{
@@ -104,7 +103,7 @@ void Player::UpdatePlayerLocation()
 				m_LerpTimer = 0;
 				GetOwner()->SetLocalPosition({ (m_PlayerInfo.gridPos.x) * 24,
 					((m_PlayerInfo.gridPos.y) * 24) + 100 ,0 });
-				std::cout << "x: " << m_PlayerInfo.gridPos.x << "  ,y: " << m_PlayerInfo.gridPos.y << std::endl;
+				//std::cout << "x: " << m_PlayerInfo.gridPos.x << "  ,y: " << m_PlayerInfo.gridPos.y << std::endl;
 			}
 		}
 	}

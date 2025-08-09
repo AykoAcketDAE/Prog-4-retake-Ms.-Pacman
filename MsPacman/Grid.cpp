@@ -10,6 +10,7 @@ Grid::Grid(dae::GameObject* owner, std::vector<std::vector<Tile*>> tileArray)
 {
 	FindVertices();
 	FindNeighbours();
+	
 }
 
 void Grid::Update()
@@ -72,15 +73,15 @@ void Grid::FindNeighbours()
 	for (int index{}; index < m_Vertices.size(); ++index)
 	{
 		
-		if (m_Vertices[index].second.x >= 1)
+		if (m_Vertices[index].second.y >= 1)
 		{
 			FindSouthNeighbour(index);
 		}
-		if (m_Vertices[index].second.x <= -1)
+		if (m_Vertices[index].second.y <= -1)
 		{
 			FindNorthNeighbour(index);
 		}
-		if (m_Vertices[index].second.x == 0)
+		if (m_Vertices[index].second.y == 0)
 		{
 			FindSouthNeighbour(index);
 			FindNorthNeighbour(index);
@@ -104,8 +105,8 @@ void Grid::FindNeighbours()
 void Grid::FindNorthNeighbour(int index)
 {
 	//north
-	auto it = m_Vertices.rend() - index;    // Corresponds to vec[15]
-	        // Corresponds to vec[-1], so search goes down to vec[0]
+	auto it = m_Vertices.rend() - index;
+	        
 
 	auto neighbour = std::find_if(it, m_Vertices.rend(), [&](std::pair<Node, glm::vec2> node) {
 		if (node.first.pos.x == m_Vertices[index].first.pos.x and node.first.pos != m_Vertices[index].first.pos)
@@ -135,7 +136,8 @@ void Grid::FindNorthNeighbour(int index)
 		else return false;
 		});
 	if (neighbour == m_Vertices.rend()) return;
-	float distance = m_Vertices[index].first.pos.x - neighbour->first.pos.x;
+	float distance = std::abs(m_Vertices[index].first.pos.y - neighbour->first.pos.y);
+	std::cout << "distance to Node: " << distance << "\n";
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }
 
@@ -173,7 +175,8 @@ void Grid::FindSouthNeighbour(int index)
 		else return false;
 		});
 	if (neighbour == m_Vertices.end()) return;
-	float distance = m_Vertices[index].first.pos.x - neighbour->first.pos.x;
+	float distance = std::abs(m_Vertices[index].first.pos.y - neighbour->first.pos.y);
+	std::cout << "distance to Node: " << distance << "\n";
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }
 
@@ -210,7 +213,8 @@ void Grid::FindEastNeighbour(int index)
 		else return false;
 		});
 	if (neighbour == m_Vertices.end()) return;
-	float distance = m_Vertices[index].first.pos.x - neighbour->first.pos.x;
+	float distance = std::abs(m_Vertices[index].first.pos.x - neighbour->first.pos.x);
+	std::cout << "distance to Node: " << distance << "\n";
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }
 
@@ -247,6 +251,7 @@ void Grid::FindWestNeighbour(int index)
 		else return false;
 		});
 	if (neighbour == m_Vertices.rend()) return;
-	float distance = m_Vertices[index].first.pos.y - neighbour->first.pos.y;
+	float distance =std::abs(m_Vertices[index].first.pos.x - neighbour->first.pos.x);
+	std::cout << "distance to Node: " << distance << "\n";
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }

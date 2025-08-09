@@ -2,8 +2,6 @@
 #include "BaseComponent.h"
 #include "Tile.h"
 #include <utility>
-#include "Player.h"
-class Player;
 
 struct Node
 {
@@ -20,7 +18,7 @@ public:
 	void Render() const override;
 
 	
-	Player::PlayerInfo* m_MsPacman;
+	
 	std::vector<std::pair<Node, glm::vec2>> m_Vertices;
 private:
 

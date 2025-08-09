@@ -13,6 +13,7 @@
 #include "MsPacmanCommands.h"
 #include "Pellet.h"
 #include "Score.h"
+#include "Ghost.h"
 
 std::vector<std::vector<Tile*>> LoadGrid(dae::Scene& scene) {
 	std::filesystem::path data_location = "../Data/";
@@ -75,10 +76,10 @@ void load()
 	SDL_FRect PlayerSrc = { 0,0,16,16 };
 	SDL_FRect PlayerDst = { 0,0,24,24};
 	Player::PlayerInfo playerInfo{};
-	playerInfo.time = 0.1f;
+	playerInfo.time = 0.2f;
 	playerInfo.isMoving = false;
 	playerInfo.direction = {0,0};
-	playerInfo.gridPos = {1,1};
+	playerInfo.gridPos = {26,29};
 	PlayerCommands playerCommands;
 	playerCommands.m_ScorePellet = std::make_unique<AddPelletScore>(player.get(), score.get());
 	player->AddComponent<dae::RenderComponent>("MsPacman.png", PlayerSrc, PlayerDst);
@@ -104,9 +105,14 @@ void load()
 
 	player->SetParent(grid.get(), false);
 	grid->SetPosition(0,100);
+
+	auto ghost = std::make_unique<dae::GameObject>();
+	ghost->AddComponent<dae::RenderComponent>("Blinky.png", SDL_FRect{ 0,0,16,16 }, SDL_FRect{ 0.f,0,24,24 });
+	ghost->AddComponent<Ghost>(gridcomp, glm::vec2{ 8,8 },player->GetComponent<Player>());
 	scene.Add(std::move(grid));
 	scene.Add(std::move(score));
 	scene.Add(std::move(player));
+	scene.Add(std::move(ghost));
 }
 
 int main(int, char* []) {
