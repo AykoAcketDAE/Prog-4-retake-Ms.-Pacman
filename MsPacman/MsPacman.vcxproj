@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="GhostStates.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MsPacman.h" />
     <ClInclude Include="MsPacmanCommands.h" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="GhostStates.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MsPacman.cpp" />
     <ClCompile Include="MsPacmanCommands.cpp" />

@@ -9,7 +9,8 @@ class Tile;
 
 struct PlayerCommands
 {
-	std::unique_ptr<AddPelletScore> m_ScorePellet;
+	std::unique_ptr<AddPelletScore> scorePellet;
+	std::unique_ptr<AddPowerPelletScore> scorePowerPellet;
 };
 
 class Player : public dae::BaseComponent
@@ -34,6 +35,7 @@ public:
 	bool CheckDirection(glm::vec2 direction);
 
 private:
+	
 	void UpdatePlayerLocation();
 	PlayerCommands m_PlayerCommands{};
 	float m_LerpTimer{};

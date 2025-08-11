@@ -1,4 +1,5 @@
 #include "Ghost.h"
+#include "GhostStates.h"
 #include <algorithm>
 #include <queue>
 #include <unordered_map>
@@ -8,8 +9,14 @@
 #include "Timer.h"
 #include <cmath>
 #include <iostream>
-Ghost::Ghost(dae::GameObject* owner, Grid* gridComp, const glm::vec2& startPos, Player* playerComp)
-	:BaseComponent(owner),m_GridComp{gridComp},m_GhostInfo{startPos},m_MsPacman{&playerComp->m_PlayerInfo}
+
+
+std::unique_ptr<GhostState> Ghost::m_ScatterState = std::make_unique<GhostScatter>();
+std::unique_ptr<GhostState> Ghost::m_ChaseState = std::make_unique<GhostChase>();
+std::unique_ptr<GhostState> Ghost::m_SpawnState = std::make_unique<GhostSpawn>();
+
+Ghost::Ghost(dae::GameObject* owner, Grid* gridComp, const glm::vec2& startPos, Player* playerComp, const glm::vec2& cornerPos)
+    :BaseComponent(owner), m_GridComp{ gridComp }, m_GhostInfo{ startPos,glm::vec2{0,0},cornerPos }, m_MsPacman{ &playerComp->m_PlayerInfo }
 {
     m_RenderComp = GetOwner()->GetComponent<dae::RenderComponent>();
     
@@ -17,35 +24,74 @@ Ghost::Ghost(dae::GameObject* owner, Grid* gridComp, const glm::vec2& startPos, 
 
 void Ghost::Update()
 {
-    if (m_GhostInfo.direction == glm::vec2{ 0,0 } or m_CurrentNode == nullptr)
-        FindClosestNode(m_GhostInfo.pos,true);
-    else {
-        
-        for (auto& node : m_GridComp->m_Vertices)
-        {
-            if (node.first.pos == m_GhostInfo.pos)
-            {
-                //m_PrevNode = &node.first;
-                
-                
-                if(!m_FoundPath)
-                {
-                    if (m_PrevNode)
-                        std::cout << "PrevNode: " << m_PrevNode->pos.x << " ," << m_PrevNode->pos.y << std::endl;
-                    FindPath();
-                    
-                }
-                break;
-            }
-        }
-        
+    if (m_CurrentState)
+    {
+        m_CurrentState->Update(*this);
     }
-    //else 
-    //{
-    //    FindClosestNodeInDirection();
+    else
+    {
+        SetState(m_SpawnState.get());
+    }
+
+    //if (m_GhostInfo.direction == glm::vec2{ 0,0 } or m_CurrentNode == nullptr)
+    //    FindClosestNode(m_GhostInfo.pos,true);
+    //else {
+    //    
+    //    for (auto& node : m_GridComp->m_Vertices)
+    //    {
+    //        if (node.first.pos == m_GhostInfo.pos)
+    //        {
+    //            //m_PrevNode = &node.first;
+    //            
+    //            
+    //            if(!m_FoundPath)
+    //            {
+    //                if (m_PrevNode)
+    //                    std::cout << "PrevNode: " << m_PrevNode->pos.x << " ," << m_PrevNode->pos.y << std::endl;
+    //                SetTargetLocation(m_MsPacman->gridPos);
+    //                FindPath(m_TargetPos);
+    //                
+    //            }
+    //            break;
+    //        }
+    //    }
+    //    
     //}
+    //Movement();
     
-    //std::cout << "Closest node: " << m_ClosestNode->pos.x << ", " << m_ClosestNode->pos.y << "\n";
+}
+
+void Ghost::Render() const
+{
+
+}
+
+void Ghost::SetGhostLocation(const glm::vec2& pos)
+{
+    
+    m_GhostInfo.pos = pos;
+
+    GetOwner()->SetLocalPosition({ (pos.x * 24),
+                                     (pos.y * 24) + 100 ,0 });
+
+}
+
+void Ghost::SetState(GhostState* state)
+{
+    if (m_CurrentState)
+    {
+        m_CurrentState->OnExit(*this);
+    }
+    if(state)
+    {
+        state->OnEnter(*this);
+        m_CurrentState = state;
+    }
+}
+
+void Ghost::Movement()
+{
+    FindPath(m_TargetPos);
     TileInfo* nextTile;
     TileInfo* currentTile;
     bool transition{ false };
@@ -75,8 +121,7 @@ void Ghost::Update()
         {
             if (transition)
             {
-                GetOwner()->SetLocalPosition({ (nextTile->row * 24),
-                                     (nextTile->col * 24) + 100 ,0 });
+                
             }
             else
             {
@@ -87,9 +132,9 @@ void Ghost::Update()
         else
         {
             // previous tile
-            currentTile->m_Contents[static_cast<int>(TileTypes::blinky)] = false;
+            currentTile->m_Contents[static_cast<int>(TileTypes::Blinky)] = false;
             // current tile
-            nextTile->m_Contents[static_cast<int>(TileTypes::blinky)] = true;
+            nextTile->m_Contents[static_cast<int>(TileTypes::Blinky)] = true;
             if (transition)
             {
                 m_GhostInfo.pos = { nextTile->row ,nextTile->col };
@@ -112,14 +157,9 @@ void Ghost::Update()
     else
     {
         m_LerpTimer = 0;
-        FindClosestNode(m_GhostInfo.pos,true);
-        currentTile->m_Contents[static_cast<int>(TileTypes::blinky)] = true;
+        FindClosestNode(m_GhostInfo.pos, true);
+        currentTile->m_Contents[static_cast<int>(TileTypes::Blinky)] = true;
     }
-}
-
-void Ghost::Render() const
-{
-
 }
 
 void Ghost::FindClosestNodeInDirection()
@@ -190,6 +230,7 @@ void Ghost::FindClosestNode(const glm::vec2& startPos, bool excludingSelf)
             if (minDistance == 0) 
             {
                 //m_PrevNode = m_CurrentNode;
+                
                 m_CurrentNode = m_ClosestNode;
             }
         }
@@ -209,9 +250,9 @@ void Ghost::FindClosestNode(const glm::vec2& startPos, bool excludingSelf)
     
 }
 
-void Ghost::FindPath()
+void Ghost::FindPath(glm::vec2 targetPos)
 {
-    auto targetPos = m_MsPacman->gridPos;
+    
     FindClosestNode(m_GhostInfo.pos, false);
 
     if (m_ClosestNode == m_CurrentNode)

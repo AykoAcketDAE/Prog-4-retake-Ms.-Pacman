@@ -2,14 +2,14 @@
 #include <BaseComponent.h>
 
 enum class TileTypes{
+	Blinky,
+	Inky,
+	Pinky,
+	Clyde,
 	Pacman,
-	blinky,
-	inky,
-	pinky,
-	clyde,
-	pellet,
-	powerPellet,
-	Powerup,
+	Pellet,
+	PowerPellet,
+	PowerUp,
 };
 struct TileInfo
 {

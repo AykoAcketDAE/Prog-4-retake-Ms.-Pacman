@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "Grid.h"
-Player::Player(dae::GameObject* owner, dae::RenderComponent* renderComp, PlayerInfo playerInfo, Grid* grid,PlayerCommands playerCommands)
+Player::Player(dae::GameObject* owner, dae::RenderComponent* renderComp, PlayerInfo playerInfo, Grid* grid, PlayerCommands playerCommands)
 	:BaseComponent(owner), m_RenderComp{ renderComp }, m_PlayerInfo{ playerInfo }, m_GridComp{ grid }
 {
 	m_PlayerCommands = std::move(playerCommands);
@@ -34,6 +34,7 @@ bool Player::CheckDirection(glm::vec2 direction)
 	return false;
 }
 
+
 void Player::UpdatePlayerLocation()
 {
 	TileInfo* nextTile;
@@ -59,10 +60,15 @@ void Player::UpdatePlayerLocation()
 	}
 
 	currentTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = true;
-	if (currentTile->m_Contents[static_cast<int>(TileTypes::pellet)] == true)
+	if (currentTile->m_Contents[static_cast<int>(TileTypes::Pellet)] == true)
 	{
-		currentTile->m_Contents[static_cast<int>(TileTypes::pellet)] = false;
-		m_PlayerCommands.m_ScorePellet->Execute();
+		currentTile->m_Contents[static_cast<int>(TileTypes::Pellet)] = false;
+		m_PlayerCommands.scorePellet->Execute();
+	}
+	if (currentTile->m_Contents[static_cast<int>(TileTypes::PowerPellet)] == true)
+	{
+		currentTile->m_Contents[static_cast<int>(TileTypes::Pellet)] = false;
+		m_PlayerCommands.scorePowerPellet->Execute();
 	}
 	
 	

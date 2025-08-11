@@ -4,7 +4,7 @@
 class Score: public dae::BaseComponent
 {
 public:
-	Score(dae::GameObject* owner);
+	Score(dae::GameObject* owner,int Score);
 
 	void Update() override;
 	void Render() const override;

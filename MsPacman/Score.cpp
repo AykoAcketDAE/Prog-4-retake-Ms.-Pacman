@@ -1,7 +1,7 @@
 #include "Score.h"
 
-Score::Score(dae::GameObject* owner)
-	:BaseComponent(owner)
+Score::Score(dae::GameObject* owner,int score)
+	:BaseComponent(owner),m_Score{score}
 {
 	m_TextComp = GetOwner()->GetComponent<dae::TextComponent>();
 }

@@ -1,6 +1,9 @@
 #include "MsPacmanCommands.h"
 #include "Player.h"
 #include "Score.h"
+#include "Ghost.h"
+#include "GhostStates.h"
+
 SetPlayerDirection::SetPlayerDirection(dae::GameObject* go, glm::vec2 direction)
 	:dae::Command(), m_GameObject{ go }, m_Direction{ direction }
 {
@@ -23,4 +26,44 @@ AddPelletScore::AddPelletScore(dae::GameObject* playerGo, dae::GameObject* score
 void AddPelletScore::Execute()
 {
 	m_ScoreGo->GetComponent<Score>()->AddScore(m_Score);
+}
+
+AddPowerPelletScore::AddPowerPelletScore(dae::GameObject* playerGo, dae::GameObject* scoreGo)
+	:m_PlayerGo{ playerGo }, m_ScoreGo{ scoreGo }
+{
+}
+
+void AddPowerPelletScore::Execute()
+{
+	m_ScoreGo->GetComponent<Score>()->AddScore(m_Score);
+}
+
+SetGhostToScatter::SetGhostToScatter(dae::GameObject* Ghost)
+	:m_Ghost{ Ghost }
+{
+}
+
+void SetGhostToScatter::Execute()
+{
+	m_Ghost->GetComponent<Ghost>()->SetState(m_Ghost->GetComponent<Ghost>()->m_ScatterState.get());
+}
+
+SetGhostToChase::SetGhostToChase(dae::GameObject* Ghost)
+	:m_Ghost{ Ghost }
+{
+}
+
+void SetGhostToChase::Execute()
+{
+	m_Ghost->GetComponent<Ghost>()->SetState(m_Ghost->GetComponent<Ghost>()->m_ChaseState.get());
+}
+
+SetGhostToSpawn::SetGhostToSpawn(dae::GameObject* Ghost)
+	:m_Ghost{ Ghost }
+{
+}
+
+void SetGhostToSpawn::Execute()
+{
+	m_Ghost->GetComponent<Ghost>()->SetState(m_Ghost->GetComponent<Ghost>()->m_SpawnState.get());
 }

@@ -3,7 +3,9 @@
 #include "RenderComponent.h"
 #include "Player.h"
 #include "Grid.h"
-#include <deque>
+#include "GhostStates.h"
+
+
 struct Node;
 struct Directions
 {
@@ -12,35 +14,52 @@ struct Directions
 	const glm::vec2 EAST{ 1, 0};
 	const glm::vec2 WEST{ -1,0 };
 };
+
+class GhostState;
+
 class Ghost: public dae::BaseComponent
 {
 public: 
-	Ghost(dae::GameObject* owner, Grid* gridComp,const glm::vec2& startPos,Player* playerComp);
+	static std::unique_ptr<GhostState> m_ScatterState;
+	static std::unique_ptr<GhostState> m_ChaseState;
+	static std::unique_ptr<GhostState> m_SpawnState;
+
+	Ghost(dae::GameObject* owner, Grid* gridComp,const glm::vec2& startPos,Player* playerComp,const glm::vec2& cornerPos);
 
 	void Update() override;
 	void Render() const override;
 
-	void SetTargetLocation(const glm::vec2& pos);
+	void Movement();
+	void FindClosestNode(const glm::vec2& startPos, bool excludingSelf);
 
+	void SetTargetLocation(const glm::vec2& pos) { m_TargetPos = pos; };
+	void SetGhostLocation(const glm::vec2& pos);
+	void SetState(GhostState* state);
+	
+	
 	struct GhostInfo {
 		glm::vec2 pos;
 		glm::vec2 direction;
+		glm::vec2 CornerPos;
 		std::vector<Node*> path;
 		float time{0.2f};
 	}m_GhostInfo;
-
-
-private:
-	void FindClosestNodeInDirection();
-	void FindClosestNode(const glm::vec2& startPos,bool excludingSelf);
-	void FindPath();
-
-
-
-	float m_LerpTimer{};
+	
 	Player::PlayerInfo* m_MsPacman;
 
+private:
+
+	
+	void FindClosestNodeInDirection();
+	
+	void FindPath(glm::vec2 targetPos);
+
+	float m_LerpTimer{};
+	
+
 	Node* m_TargetNode{};
+	glm::vec2 m_TargetPos{};
+	
 	Node* m_CurrentNode{};
 	Node* m_PrevNode{};
 	Node* m_ClosestNode{};
@@ -48,5 +67,6 @@ private:
 	bool m_FoundPath{false};
 	dae::RenderComponent* m_RenderComp{};
 	
+	GhostState* m_CurrentState{};
 };
 

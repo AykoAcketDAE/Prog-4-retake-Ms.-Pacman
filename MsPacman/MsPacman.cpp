@@ -42,8 +42,6 @@ std::vector<std::vector<Tile*>> LoadGrid(dae::Scene& scene) {
 			scene.Add(std::move(go));
 		}
 	}
-	
-	
 	return grid;
 }
 
@@ -70,7 +68,7 @@ void load()
 	auto score = std::make_unique<dae::GameObject>();
 	score->AddComponent<dae::TextComponent>("0", font);
 	score->GetComponent<dae::TextComponent>()->SetPosition(40, 60);
-	score->AddComponent<Score>();
+	score->AddComponent<Score>(0);
 
 	auto player = std::make_unique<dae::GameObject>();
 	SDL_FRect PlayerSrc = { 0,0,16,16 };
@@ -81,7 +79,8 @@ void load()
 	playerInfo.direction = {0,0};
 	playerInfo.gridPos = {26,29};
 	PlayerCommands playerCommands;
-	playerCommands.m_ScorePellet = std::make_unique<AddPelletScore>(player.get(), score.get());
+	playerCommands.scorePellet = std::make_unique<AddPelletScore>(player.get(), score.get());
+	playerCommands.scorePowerPellet = std::make_unique<AddPowerPelletScore>(player.get(), score.get());
 	player->AddComponent<dae::RenderComponent>("MsPacman.png", PlayerSrc, PlayerDst);
 	auto gridcomp = grid->GetComponent<Grid>();
 	player->AddComponent<Player>(player->GetComponent<dae::RenderComponent>(), playerInfo,grid->GetComponent<Grid>(),std::move(playerCommands));
@@ -93,7 +92,10 @@ void load()
 			if (gridcomp->m_Grid[row][col]->m_TileInfo.isWalkable)
 			{
 				auto pellet = std::make_unique<dae::GameObject>();
-				pellet->AddComponent<Pellet>(gridcomp,row,col, false);
+				if (row == 1 and col == 2)
+					pellet->AddComponent<Pellet>(gridcomp,row,col, true);
+				else
+					pellet->AddComponent<Pellet>(gridcomp, row, col, false);
 				scene.Add(std::move(pellet));
 			}
 		}
@@ -108,7 +110,7 @@ void load()
 
 	auto ghost = std::make_unique<dae::GameObject>();
 	ghost->AddComponent<dae::RenderComponent>("Blinky.png", SDL_FRect{ 0,0,16,16 }, SDL_FRect{ 0.f,0,24,24 });
-	ghost->AddComponent<Ghost>(gridcomp, glm::vec2{ 8,8 },player->GetComponent<Player>());
+	ghost->AddComponent<Ghost>(gridcomp, glm::vec2{ 12,13 },player->GetComponent<Player>(),glm::vec2{1,1});
 	scene.Add(std::move(grid));
 	scene.Add(std::move(score));
 	scene.Add(std::move(player));
