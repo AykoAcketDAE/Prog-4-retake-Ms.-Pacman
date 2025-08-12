@@ -13,3 +13,6 @@
 #include "GameObject.h"
 #include "filesystem"
 
+void LoadMap1();
+void LoadMap2();
+void LoadMap3();

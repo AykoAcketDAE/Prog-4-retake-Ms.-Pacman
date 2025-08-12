@@ -5,16 +5,35 @@
 #include "Renderer.h"
 #include <iostream>
 #endif
-Grid::Grid(dae::GameObject* owner, std::vector<std::vector<Tile*>> tileArray)
-	:BaseComponent(owner), m_Grid{ tileArray } 
+#include "Scene.h"
+Grid::Grid(dae::GameObject* owner, std::vector<std::vector<Tile*>> tileArray, const std::string& NextMap)
+	:BaseComponent(owner), m_Grid{ tileArray } ,m_NextMap{NextMap}
 {
 	FindVertices();
 	FindNeighbours();
-	
 }
 
 void Grid::Update()
 {
+	if (m_AmountPelletsLeft == 0)
+		dae::SceneManager::GetInstance().SetNextScene(m_NextMap);
+	int pellets{};
+	for (int row{ 1 }; row < m_Grid.size() - 1; ++row)
+	{
+		for (int col{ 1 }; col < m_Grid[row].size() - 1; ++col)
+		{
+			if (m_Grid[row][col]->m_TileInfo.m_Contents[static_cast<int>(TileTypes::Pellet)] == true)
+			{
+				++pellets;
+			}
+			if (m_Grid[row][col]->m_TileInfo.m_Contents[static_cast<int>(TileTypes::PowerPellet)] == true)
+			{
+				++pellets;
+			}
+		}
+	}
+	m_AmountPelletsLeft = pellets;
+	
 }
 
 void Grid::Render() const
@@ -24,6 +43,11 @@ void Grid::Render() const
 		dae::Renderer::GetInstance().RenderSquare(static_cast<int>(node.first.pos.x * 24), static_cast<int>(node.first.pos.y * 24) + 100, 24, { 255,255,255 }, false);
 #endif
 
+}
+
+void Grid::SkipLevel()
+{
+	dae::SceneManager::GetInstance().SetNextScene(m_NextMap);
 }
 
 void Grid::FindVertices()
@@ -120,6 +144,15 @@ void Grid::FindNorthNeighbour(int index)
 #endif
 				return true;
 			}
+			if (node.second.y + m_Vertices[index].second.y >= 2) {
+#if _DEBUG
+				std::cout << "--------------------------------\n";
+				std::cout << "North\n";
+				std::cout << "Start node: " << m_Vertices[index].first.pos.x << ", " << m_Vertices[index].first.pos.y << "\n";
+				std::cout << "found node: " << node.first.pos.x << ", " << node.first.pos.y << "\n";
+#endif
+				return true;
+			}
 			else if (m_Vertices[index].second.y == 0)
 			{
 #if _DEBUG
@@ -137,7 +170,9 @@ void Grid::FindNorthNeighbour(int index)
 		});
 	if (neighbour == m_Vertices.rend()) return;
 	float distance = std::abs(m_Vertices[index].first.pos.y - neighbour->first.pos.y);
+#if _DEBUG
 	std::cout << "distance to Node: " << distance << "\n";
+#endif
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }
 
@@ -150,6 +185,16 @@ void Grid::FindSouthNeighbour(int index)
 		if (node.first.pos.x == m_Vertices[index].first.pos.x and node.first.pos != m_Vertices[index].first.pos)
 		{
 			if (node.second.y + m_Vertices[index].second.y == 0 )
+			{
+#if _DEBUG
+				std::cout << "--------------------------------\n";
+				std::cout << "South\n";
+				std::cout << "Start node: " << m_Vertices[index].first.pos.x << ", " << m_Vertices[index].first.pos.y << "\n";
+				std::cout << "found node: " << node.first.pos.x << ", " << node.first.pos.y << "\n";
+#endif
+				return true;
+			}
+			if (node.second.y + m_Vertices[index].second.y >= 2)
 			{
 #if _DEBUG
 				std::cout << "--------------------------------\n";
@@ -176,7 +221,9 @@ void Grid::FindSouthNeighbour(int index)
 		});
 	if (neighbour == m_Vertices.end()) return;
 	float distance = std::abs(m_Vertices[index].first.pos.y - neighbour->first.pos.y);
+#if _DEBUG
 	std::cout << "distance to Node: " << distance << "\n";
+#endif
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }
 
@@ -214,7 +261,9 @@ void Grid::FindEastNeighbour(int index)
 		});
 	if (neighbour == m_Vertices.end()) return;
 	float distance = std::abs(m_Vertices[index].first.pos.x - neighbour->first.pos.x);
+#if _DEBUG
 	std::cout << "distance to Node: " << distance << "\n";
+#endif
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }
 
@@ -252,6 +301,8 @@ void Grid::FindWestNeighbour(int index)
 		});
 	if (neighbour == m_Vertices.rend()) return;
 	float distance =std::abs(m_Vertices[index].first.pos.x - neighbour->first.pos.x);
+#if _DEBUG
 	std::cout << "distance to Node: " << distance << "\n";
+#endif
 	m_Vertices[index].first.neighbours.push_back({ &neighbour->first, static_cast<int>(distance) });
 }

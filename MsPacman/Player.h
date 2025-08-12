@@ -11,6 +11,9 @@ struct PlayerCommands
 {
 	std::unique_ptr<AddPelletScore> scorePellet;
 	std::unique_ptr<AddPowerPelletScore> scorePowerPellet;
+	std::vector<std::unique_ptr<SetGhostToSpawn>> killGhost;
+	std::vector<std::unique_ptr<SetGhostToScatter>> scatterGhost;
+
 };
 
 class Player : public dae::BaseComponent
@@ -33,6 +36,7 @@ public:
 	} m_PlayerInfo;
 	
 	bool CheckDirection(glm::vec2 direction);
+	void SetCanEatGhostTrue();
 
 private:
 	
@@ -41,6 +45,8 @@ private:
 	float m_LerpTimer{};
 	dae::RenderComponent* m_RenderComp{};
 	Grid* m_GridComp{};
-
+	bool m_CanEatGhost{ false };
+	float m_GhostTimer{};
+	float m_EatenGhost{};
 };
 

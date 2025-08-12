@@ -18,6 +18,17 @@ namespace dae
 		void Remove(std::unique_ptr<GameObject> object);
 		void RemoveAll();
 
+		template<typename Comp>
+		Comp* FindComponentInScene()
+		{
+			for (auto& go : m_objects)
+			{
+				if (go->GetComponent<Comp>())
+					return go->GetComponent<Comp>();
+			}
+			return nullptr;
+		}
+
 		void Update();
 		void Render() const;
 		void Cleanup();

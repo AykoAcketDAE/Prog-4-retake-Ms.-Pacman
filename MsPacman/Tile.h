@@ -5,7 +5,7 @@ enum class TileTypes{
 	Blinky,
 	Inky,
 	Pinky,
-	Clyde,
+	Sue,
 	Pacman,
 	Pellet,
 	PowerPellet,

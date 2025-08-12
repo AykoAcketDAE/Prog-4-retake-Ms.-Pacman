@@ -3,7 +3,7 @@
 #include "Score.h"
 #include "Ghost.h"
 #include "GhostStates.h"
-
+#include "Scene.h"
 SetPlayerDirection::SetPlayerDirection(dae::GameObject* go, glm::vec2 direction)
 	:dae::Command(), m_GameObject{ go }, m_Direction{ direction }
 {
@@ -45,7 +45,8 @@ SetGhostToScatter::SetGhostToScatter(dae::GameObject* Ghost)
 
 void SetGhostToScatter::Execute()
 {
-	m_Ghost->GetComponent<Ghost>()->SetState(m_Ghost->GetComponent<Ghost>()->m_ScatterState.get());
+	if(m_Ghost->GetComponent<Ghost>()->m_CurrentState != m_Ghost->GetComponent<Ghost>()->m_SpawnState.get())
+		m_Ghost->GetComponent<Ghost>()->SetState(m_Ghost->GetComponent<Ghost>()->m_ScatterState.get());
 }
 
 SetGhostToChase::SetGhostToChase(dae::GameObject* Ghost)
@@ -66,4 +67,9 @@ SetGhostToSpawn::SetGhostToSpawn(dae::GameObject* Ghost)
 void SetGhostToSpawn::Execute()
 {
 	m_Ghost->GetComponent<Ghost>()->SetState(m_Ghost->GetComponent<Ghost>()->m_SpawnState.get());
+}
+
+void SkipLevel::Execute()
+{
+	dae::SceneManager::GetInstance().GetCurrentScene()->FindComponentInScene<Grid>()->SkipLevel();
 }

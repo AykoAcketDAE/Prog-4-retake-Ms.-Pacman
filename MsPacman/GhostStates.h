@@ -41,6 +41,6 @@ private:
 	const float m_MaxTime{ 5.f };
 	float m_Time{};
 	glm::vec2 m_StartPos{};
-	glm::vec2 m_EndPos{13,11};
+	glm::vec2 m_EndPos{(rand()%5) + 10,11};
 };
 

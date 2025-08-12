@@ -20,11 +20,11 @@ class GhostState;
 class Ghost: public dae::BaseComponent
 {
 public: 
-	static std::unique_ptr<GhostState> m_ScatterState;
-	static std::unique_ptr<GhostState> m_ChaseState;
-	static std::unique_ptr<GhostState> m_SpawnState;
+	std::unique_ptr<GhostState> m_ScatterState;
+	std::unique_ptr<GhostState> m_ChaseState;
+	std::unique_ptr<GhostState> m_SpawnState;
 
-	Ghost(dae::GameObject* owner, Grid* gridComp,const glm::vec2& startPos,Player* playerComp,const glm::vec2& cornerPos);
+	Ghost(dae::GameObject* owner, Grid* gridComp,const glm::vec2& startPos,Player* playerComp,const glm::vec2& cornerPos,TileTypes type);
 
 	void Update() override;
 	void Render() const override;
@@ -47,6 +47,7 @@ public:
 	
 	Player::PlayerInfo* m_MsPacman;
 
+	GhostState* m_CurrentState{};
 private:
 
 	
@@ -67,6 +68,7 @@ private:
 	bool m_FoundPath{false};
 	dae::RenderComponent* m_RenderComp{};
 	
-	GhostState* m_CurrentState{};
+	
+	TileTypes m_GhostType;
 };
 

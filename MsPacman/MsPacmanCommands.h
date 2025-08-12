@@ -78,3 +78,15 @@ private:
 	dae::GameObject* m_Ghost{ nullptr };
 	
 };
+class SkipLevel final : public dae::Command
+{
+public:
+	SkipLevel() {};
+	virtual ~SkipLevel() = default;
+	void Execute() override;
+
+private:
+
+	
+
+};

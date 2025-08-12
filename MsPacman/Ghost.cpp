@@ -11,15 +11,21 @@
 #include <iostream>
 
 
-std::unique_ptr<GhostState> Ghost::m_ScatterState = std::make_unique<GhostScatter>();
-std::unique_ptr<GhostState> Ghost::m_ChaseState = std::make_unique<GhostChase>();
-std::unique_ptr<GhostState> Ghost::m_SpawnState = std::make_unique<GhostSpawn>();
 
-Ghost::Ghost(dae::GameObject* owner, Grid* gridComp, const glm::vec2& startPos, Player* playerComp, const glm::vec2& cornerPos)
-    :BaseComponent(owner), m_GridComp{ gridComp }, m_GhostInfo{ startPos,glm::vec2{0,0},cornerPos }, m_MsPacman{ &playerComp->m_PlayerInfo }
+
+
+
+Ghost::Ghost(dae::GameObject* owner, Grid* gridComp, const glm::vec2& startPos, Player* playerComp, const glm::vec2& cornerPos, TileTypes type)
+    :BaseComponent(owner), 
+    m_GridComp{ gridComp }, 
+    m_GhostInfo{ startPos,glm::vec2{0,0},cornerPos }, 
+    m_MsPacman{ &playerComp->m_PlayerInfo },
+    m_GhostType{type}
 {
     m_RenderComp = GetOwner()->GetComponent<dae::RenderComponent>();
-    
+    m_ScatterState = std::make_unique<GhostScatter>();
+    m_ChaseState = std::make_unique<GhostChase>();
+    m_SpawnState = std::make_unique<GhostSpawn>();
 }
 
 void Ghost::Update()
@@ -119,22 +125,15 @@ void Ghost::Movement()
         m_LerpTimer += dae::Time::GetInstance().GetDeltaTime();
         if (float t = m_LerpTimer / m_GhostInfo.time; t < 1)
         {
-            if (transition)
-            {
-                
-            }
-            else
-            {
-                GetOwner()->SetLocalPosition({ std::lerp((m_GhostInfo.pos.x) * 24,(m_GhostInfo.pos.x + m_GhostInfo.direction.x) * 24,t),
-                                    std::lerp(((m_GhostInfo.pos.y) * 24) + 100,((m_GhostInfo.pos.y + m_GhostInfo.direction.y) * 24) + 100,t),0 });
-            }
+            GetOwner()->SetLocalPosition({ std::lerp((m_GhostInfo.pos.x) * 24,(m_GhostInfo.pos.x + m_GhostInfo.direction.x) * 24,t),
+                                std::lerp(((m_GhostInfo.pos.y) * 24) + 100,((m_GhostInfo.pos.y + m_GhostInfo.direction.y) * 24) + 100,t),0 });
         }
         else
         {
             // previous tile
-            currentTile->m_Contents[static_cast<int>(TileTypes::Blinky)] = false;
+            currentTile->m_Contents[static_cast<int>(m_GhostType)] = false;
             // current tile
-            nextTile->m_Contents[static_cast<int>(TileTypes::Blinky)] = true;
+            nextTile->m_Contents[static_cast<int>(m_GhostType)] = true;
             if (transition)
             {
                 m_GhostInfo.pos = { nextTile->row ,nextTile->col };
@@ -158,7 +157,7 @@ void Ghost::Movement()
     {
         m_LerpTimer = 0;
         FindClosestNode(m_GhostInfo.pos, true);
-        currentTile->m_Contents[static_cast<int>(TileTypes::Blinky)] = true;
+        currentTile->m_Contents[static_cast<int>(m_GhostType)] = true;
     }
 }
 

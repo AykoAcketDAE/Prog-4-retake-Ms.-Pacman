@@ -16,6 +16,26 @@ Player::Player(dae::GameObject* owner, dae::RenderComponent* renderComp, PlayerI
 void Player::Update()
 {
 	UpdatePlayerLocation();
+	if (m_CanEatGhost and m_GhostTimer <= 7.f)
+	{
+		m_GhostTimer += dae::Time::GetInstance().GetDeltaTime(); 
+		TileInfo* currentTile{ &m_GridComp->m_Grid[static_cast<int>(m_PlayerInfo.gridPos.x)][static_cast<int>(m_PlayerInfo.gridPos.y)]->m_TileInfo };
+
+		for (int index{}; index < 4; ++index)
+		{
+			if (currentTile->m_Contents[index] == true)
+			{
+				m_PlayerCommands.killGhost[index]->Execute();
+			}
+		}  
+		
+		
+	}
+	else
+	{
+		m_CanEatGhost = false;
+		m_GhostTimer = 0;
+	}
 }
 
 void Player::Render() const
@@ -32,6 +52,15 @@ bool Player::CheckDirection(glm::vec2 direction)
 
 	if (nextTile->isWalkable) return true;
 	return false;
+}
+
+void Player::SetCanEatGhostTrue()
+{
+	m_CanEatGhost = true;
+	for (auto& ghost : m_PlayerCommands.scatterGhost)
+	{
+		ghost->Execute();
+	}
 }
 
 
@@ -67,8 +96,10 @@ void Player::UpdatePlayerLocation()
 	}
 	if (currentTile->m_Contents[static_cast<int>(TileTypes::PowerPellet)] == true)
 	{
-		currentTile->m_Contents[static_cast<int>(TileTypes::Pellet)] = false;
+		currentTile->m_Contents[static_cast<int>(TileTypes::PowerPellet)] = false;
 		m_PlayerCommands.scorePowerPellet->Execute();
+		SetCanEatGhostTrue();
+		
 	}
 	
 	
