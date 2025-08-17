@@ -6,6 +6,8 @@
 #include <iostream>
 #endif
 #include "Scene.h"
+
+#include "Tile.h"
 Grid::Grid(dae::GameObject* owner, std::vector<std::vector<Tile*>> tileArray, const std::string& NextMap)
 	:BaseComponent(owner), m_Grid{ tileArray } ,m_NextMap{NextMap}
 {
@@ -47,7 +49,20 @@ void Grid::Render() const
 
 void Grid::SkipLevel()
 {
+	if (m_NextMap == "Map2")
+	{
+		LoadMap2();
+	}
+	if (m_NextMap == "Map3")
+	{
+		LoadMap3();
+	}
+	if (m_NextMap == "HighScore")
+	{
+		LoadHighScore();
+	}
 	dae::SceneManager::GetInstance().SetNextScene(m_NextMap);
+
 }
 
 void Grid::FindVertices()

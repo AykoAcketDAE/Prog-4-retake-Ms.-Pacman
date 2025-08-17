@@ -42,6 +42,9 @@
     <ClInclude Include="GhostStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MsPacman.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GhostStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

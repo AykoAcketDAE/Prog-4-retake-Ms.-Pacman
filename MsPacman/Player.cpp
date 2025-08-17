@@ -4,8 +4,8 @@
 #include <vector>
 #include <iostream>
 #include "Grid.h"
-Player::Player(dae::GameObject* owner, dae::RenderComponent* renderComp, PlayerInfo playerInfo, Grid* grid, PlayerCommands playerCommands)
-	:BaseComponent(owner), m_RenderComp{ renderComp }, m_PlayerInfo{ playerInfo }, m_GridComp{ grid }
+Player::Player(dae::GameObject* owner, dae::RenderComponent* renderComp, PlayerInfo playerInfo, Grid* grid, PlayerCommands playerCommands,const TileTypes& tileType)
+	:BaseComponent(owner), m_RenderComp{ renderComp }, m_PlayerInfo{ playerInfo }, m_GridComp{ grid },m_TileType{tileType}
 {
 	m_PlayerCommands = std::move(playerCommands);
 	m_GridComp->m_Grid[static_cast<int>(m_PlayerInfo.gridPos.x)]
@@ -26,6 +26,25 @@ void Player::Update()
 			if (currentTile->m_Contents[index] == true)
 			{
 				m_PlayerCommands.killGhost[index]->Execute();
+				currentTile->m_Contents[index] = false;
+				m_EatenGhost++;
+				switch (m_EatenGhost)
+				{
+				case 1:
+					m_PlayerCommands.oneGhost->Execute();
+					break;
+				case 2:
+					m_PlayerCommands.twoGhost->Execute();
+					break;
+				case 3:
+					m_PlayerCommands.threeGhost->Execute();
+					break;
+				case 4:
+					m_PlayerCommands.fourGhost->Execute();
+					break;
+				default:
+					break;
+				}
 			}
 		}  
 		
@@ -35,6 +54,7 @@ void Player::Update()
 	{
 		m_CanEatGhost = false;
 		m_GhostTimer = 0;
+		m_EatenGhost = 0;
 	}
 }
 
@@ -88,7 +108,7 @@ void Player::UpdatePlayerLocation()
 		currentTile = &m_GridComp->m_Grid[static_cast<int>(m_PlayerInfo.gridPos.x)][static_cast<int>(m_PlayerInfo.gridPos.y)]->m_TileInfo;
 	}
 
-	currentTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = true;
+	currentTile->m_Contents[static_cast<int>(m_TileType)] = true;
 	if (currentTile->m_Contents[static_cast<int>(TileTypes::Pellet)] == true)
 	{
 		currentTile->m_Contents[static_cast<int>(TileTypes::Pellet)] = false;
@@ -99,9 +119,19 @@ void Player::UpdatePlayerLocation()
 		currentTile->m_Contents[static_cast<int>(TileTypes::PowerPellet)] = false;
 		m_PlayerCommands.scorePowerPellet->Execute();
 		SetCanEatGhostTrue();
-		
 	}
-	
+	if (!m_CanEatGhost)
+	{
+		for (int index{}; index < 4; ++index)
+		{
+			if (currentTile->m_Contents[index] == true)
+			{
+				m_PlayerCommands.playerDied->Execute();
+				m_PlayerInfo.gridPos = glm::vec2{ 13,11 };
+				return;
+			}
+		}
+	}
 	
 
 	if (nextTile->isWalkable == true)
@@ -123,9 +153,9 @@ void Player::UpdatePlayerLocation()
 		else
 		{
 			// previous tile
-			currentTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = false;
+			currentTile->m_Contents[static_cast<int>(m_TileType)] = false;
 			// current tile
-			nextTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = true;
+			nextTile->m_Contents[static_cast<int>(m_TileType)] = true;
 			if (transition)
 			{
 				m_PlayerInfo.gridPos = { nextTile->row ,nextTile->col };
@@ -147,6 +177,6 @@ void Player::UpdatePlayerLocation()
 	else
 	{
 		m_LerpTimer = 0;
-		currentTile->m_Contents[static_cast<int>(TileTypes::Pacman)] = true;
+		currentTile->m_Contents[static_cast<int>(m_TileType)] = true;
 	}
 }

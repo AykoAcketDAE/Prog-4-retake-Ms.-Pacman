@@ -48,15 +48,14 @@ public:
 	Player::PlayerInfo* m_MsPacman;
 
 	GhostState* m_CurrentState{};
+	dae::RenderComponent* m_RenderComp{};
+	std::string m_OriginalTexture{};
 private:
 
-	
-	void FindClosestNodeInDirection();
 	
 	void FindPath(glm::vec2 targetPos);
 
 	float m_LerpTimer{};
-	
 
 	Node* m_TargetNode{};
 	glm::vec2 m_TargetPos{};
@@ -66,7 +65,7 @@ private:
 	Node* m_ClosestNode{};
 	Grid* m_GridComp{};
 	bool m_FoundPath{false};
-	dae::RenderComponent* m_RenderComp{};
+	
 	
 	
 	TileTypes m_GhostType;

@@ -13,6 +13,15 @@
 #include "GameObject.h"
 #include "filesystem"
 
+
+
+
+void LoadStartScreen();
 void LoadMap1();
 void LoadMap2();
 void LoadMap3();
+void LoadHighScore();
+
+void SetBoolCoop(); 
+void SetBoolSolo();
+void SetBoolVersus();

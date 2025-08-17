@@ -29,7 +29,8 @@ namespace dae {
 		//float GetAngle() const { return m_Angle; };
 		void SetCenter(SDL_Point center) { m_Center = center; };
 		//SDL_Point GetCenter() const { return m_Center; };
-		
+		std::string GetTexture() { return m_Path; };
+
 	private:
 
 		bool m_HasBounds{false};

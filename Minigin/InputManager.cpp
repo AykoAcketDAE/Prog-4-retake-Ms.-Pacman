@@ -64,5 +64,5 @@ void dae::InputManager::AddGamepadCommand(int index,GamepadData key, std::unique
 void dae::InputManager::AddGamepad(std::unique_ptr<GamepadInput> gamepad)
 {
 	m_Gamepads[dae::SceneManager::GetInstance().GetCurrentScene()].push_back(std::move(gamepad));
-	m_GamepadCommands[dae::SceneManager::GetInstance().GetCurrentScene()].resize(m_Gamepads.size());
+	m_GamepadCommands[dae::SceneManager::GetInstance().GetCurrentScene()].resize(m_Gamepads.size()+1);
 }

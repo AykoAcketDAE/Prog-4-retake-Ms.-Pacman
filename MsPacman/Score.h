@@ -11,7 +11,8 @@ public:
 	void AddScore(int points) {
 		m_Score += points;
 	}
+	static int m_Score;
 private:
 	dae::TextComponent* m_TextComp;
-	int m_Score{};
+	
 };

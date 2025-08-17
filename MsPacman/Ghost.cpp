@@ -8,7 +8,7 @@
 #include "Grid.h"
 #include "Timer.h"
 #include <cmath>
-#include <iostream>
+
 
 
 
@@ -26,6 +26,7 @@ Ghost::Ghost(dae::GameObject* owner, Grid* gridComp, const glm::vec2& startPos, 
     m_ScatterState = std::make_unique<GhostScatter>();
     m_ChaseState = std::make_unique<GhostChase>();
     m_SpawnState = std::make_unique<GhostSpawn>();
+    m_OriginalTexture = m_RenderComp->GetTexture();
 }
 
 void Ghost::Update()
@@ -39,31 +40,7 @@ void Ghost::Update()
         SetState(m_SpawnState.get());
     }
 
-    //if (m_GhostInfo.direction == glm::vec2{ 0,0 } or m_CurrentNode == nullptr)
-    //    FindClosestNode(m_GhostInfo.pos,true);
-    //else {
-    //    
-    //    for (auto& node : m_GridComp->m_Vertices)
-    //    {
-    //        if (node.first.pos == m_GhostInfo.pos)
-    //        {
-    //            //m_PrevNode = &node.first;
-    //            
-    //            
-    //            if(!m_FoundPath)
-    //            {
-    //                if (m_PrevNode)
-    //                    std::cout << "PrevNode: " << m_PrevNode->pos.x << " ," << m_PrevNode->pos.y << std::endl;
-    //                SetTargetLocation(m_MsPacman->gridPos);
-    //                FindPath(m_TargetPos);
-    //                
-    //            }
-    //            break;
-    //        }
-    //    }
-    //    
-    //}
-    //Movement();
+
     
 }
 
@@ -74,12 +51,8 @@ void Ghost::Render() const
 
 void Ghost::SetGhostLocation(const glm::vec2& pos)
 {
-    
     m_GhostInfo.pos = pos;
-
-    GetOwner()->SetLocalPosition({ (pos.x * 24),
-                                     (pos.y * 24) + 100 ,0 });
-
+    GetOwner()->SetLocalPosition({ (pos.x * 24),(pos.y * 24) + 100 ,0 });
 }
 
 void Ghost::SetState(GhostState* state)
@@ -140,7 +113,7 @@ void Ghost::Movement()
                 m_LerpTimer = 0;
                 GetOwner()->SetLocalPosition({ (nextTile->row * 24),
                     (nextTile->col * 24) + 100 ,0 });
-                //std::cout << "x: " << m_GhostInfo.pos.x << "  ,y: " << m_GhostInfo.pos.y << std::endl;
+                
             }
             else
             {
@@ -149,7 +122,7 @@ void Ghost::Movement()
                 GetOwner()->SetLocalPosition({ (m_GhostInfo.pos.x) * 24,
                     ((m_GhostInfo.pos.y) * 24) + 100 ,0 });
                 m_FoundPath = false;
-                std::cout << "x: " << m_GhostInfo.pos.x << "  ,y: " << m_GhostInfo.pos.y << std::endl;
+                
             }
         }
     }
@@ -159,55 +132,6 @@ void Ghost::Movement()
         FindClosestNode(m_GhostInfo.pos, true);
         currentTile->m_Contents[static_cast<int>(m_GhostType)] = true;
     }
-}
-
-void Ghost::FindClosestNodeInDirection()
-{
-    Directions trueDirection;
-    if (!m_CurrentNode) return;
-    auto& currentNode = m_CurrentNode->neighbours;
-    if (m_GhostInfo.direction == trueDirection.NORTH)
-    {
-        auto foundNode = std::find_if(currentNode.begin(), currentNode.end(), [&](std::pair<Node*, int> node)
-            {
-                auto direction = node.first->pos.y - m_CurrentNode->pos.y;
-                if (direction <= trueDirection.NORTH.y) return true;
-                else return false;
-            });
-        if (foundNode == currentNode.end())return;
-    }
-    if (m_GhostInfo.direction == trueDirection.SOUTH)
-    {
-        auto foundNode = std::find_if(currentNode.begin(), currentNode.end(), [&](std::pair<Node*, int> node)
-            {
-                auto direction = node.first->pos.y - m_CurrentNode->pos.y;
-                if (direction >= trueDirection.SOUTH.y) return true;
-                else return false;
-            });
-        if (foundNode == currentNode.end())return;
-    }
-    if (m_GhostInfo.direction == trueDirection.EAST)
-    {
-        auto foundNode = std::find_if(currentNode.begin(), currentNode.end(), [&](std::pair<Node*, int> node)
-            {
-                auto direction = node.first->pos.x - m_CurrentNode->pos.x;
-                if (direction >= trueDirection.EAST.x) return true;
-                else return false;
-            });
-        if (foundNode == currentNode.end())return;
-    }
-    if (m_GhostInfo.direction == trueDirection.WEST)
-    {
-        auto foundNode = std::find_if(currentNode.begin(), currentNode.end(), [&](std::pair<Node*, int> node)
-            {
-                auto direction = node.first->pos.x - m_CurrentNode->pos.x;
-                if (direction <= trueDirection.WEST.x) return true;
-                else return false;
-            });
-        if (foundNode == currentNode.end())return;
-    }
-    
-
 }
 
 void Ghost::FindClosestNode(const glm::vec2& startPos, bool excludingSelf)

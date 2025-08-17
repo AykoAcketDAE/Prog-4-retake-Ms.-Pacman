@@ -1,8 +1,8 @@
 #pragma once
 #include "BaseComponent.h"
-#include "Tile.h"
 #include <utility>
-
+#include "MsPacman.h"
+class Tile;
 struct Node
 {
 	glm::vec2 pos;
